@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
@@ -7,6 +8,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float controlSpeed = 50f;
     [SerializeField] float xClampRange = 20f;
     [SerializeField] float yClampRange = 20f;
+    [SerializeField] float controlRollFactor = 20f;
+    [SerializeField] float controlPitchFactor = 20f;
+    [SerializeField] float rotationSpeed = 10f;
 
     Vector2 movement;
 
@@ -43,6 +47,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void ProcessRotation()
     {
-        transform.localRotation = Quaternion.Euler(0f,0f,45f);
+        Quaternion targetRotation = Quaternion.Euler(-controlPitchFactor * movement.y, 0f, -controlRollFactor * movement.x);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, rotationSpeed * Time.deltaTime);
+
     }
 }
