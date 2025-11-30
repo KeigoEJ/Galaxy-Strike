@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Animations;
@@ -29,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
     public void OnMove(InputValue value)
     {
         movement = value.Get<Vector2>();
-
     }
     
     private void ProcessTranslation()

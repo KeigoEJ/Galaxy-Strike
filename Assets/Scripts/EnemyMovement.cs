@@ -1,28 +1,38 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] InputAction movement;
+    [SerializeField] InputAction  thrust;
     [SerializeField] float xClampedRange = 30f;
     [SerializeField] float yClampedRange = 30f;
     [SerializeField] float speedMovement = 10f;
     [SerializeField] float speedRotation = 20f;
     [SerializeField] float pitchRotationValue = 20f;
     [SerializeField] float rollRotationValue = 20f;
+    [SerializeField] float thrustPower = 1000f;
+
+    Rigidbody rb;
 
     Vector2 movementDirection;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     void OnEnable()
     {
         movement.Enable();
+        thrust.Enable();
     }
 
     void Update()
     {
         ProcessMovement();
         ProcessRotation();
+        ProcessDodge();
     }
 
     private void ProcessMovement()
@@ -47,5 +57,16 @@ public class EnemyMovement : MonoBehaviour
 
         Quaternion rotationTarget = Quaternion.Euler(pitch, 0f, roll);
         transform.localRotation = Quaternion.Slerp(transform.localRotation, rotationTarget, speedRotation * Time.deltaTime);
+    }
+
+    private void ProcessDodge()
+    {
+        if(thrust.IsPressed())
+        {
+            rb.freezeRotation = true;
+            rb.AddForce(Vector3.up * Time.deltaTime * thrustPower);
+            rb.freezeRotation = false;
+            
+        }
     }
 }
